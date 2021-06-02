@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/index.css">
+    <title>走马灯</title>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+        .box {
+            width: 220px;
+            cursor: pointer;
+            border: 1px solid red;
+        }
+        input{
+            cursor: pointer;
+            width: 50px;
+            margin-bottom: 10px;
+            background-color: #8a8afc;
+            font-size: 20px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <input type="button" value="开始" @click="start">
+    <input type="button" value="停止" @click="stop">
+     <div v-text="msg" class="box"></div>
+</div>
+
+<script src="lib/vue.js"></script>
+<script>
+    //注意在 Vue 实列中，如果要获取 data上得数据，想要调用 methods得方法，必须通过this.数据.属性名 或者 this.方法name来访问
+    //这里得this就是我们 ew 出来得vm实列对象
+    let vm = new Vue({
+        el: '#app',
+        data: { //data 属性中,存放的是 el 中要用到的数据
+            msg: '欢迎学习 Vue,欢迎学习 Vue',
+            timer: null //定义定时器的name
+        },
+        methods: { //这个 methods 定义了 Vue实列中可以用的方法
+            start() {
+                console.log('开始')
+                //console.log(this) //Vue
+               // console.log(this.msg) //我的msg
+                // let _self = this //保存 this
+
+                 if (this.timer === null ){
+                     this.timer = setInterval( () => { //使用箭头函数 更改this的指向
+                         //获取到头的第一个字符
+                         let star = this.msg.substring(0,1)
+                         //获取到后面所有的字符
+                         let end = this.msg.substring(1)
+                         //重新赋值得到新的字符串 并且赋值给 this.msg
+                         this.msg =  end + star
+                     },1000)
+                 }
+
+                // vm实列 会监听自己身上的data中的所有数据的改变，如果发生变化，会自动把更新的数据，从data上同步到页面上去
+                //程序员只需要关心数据，不需要关心如何重新渲染DOM
+            },
+            stop() {
+                //清除定时器
+              clearInterval(this.timer)
+              // 当清除定时器后  重新给定时器 赋值为 null
+              this.timer = null
+            }
+        }
+    })
+</script>
+
+</body>
+</html>
